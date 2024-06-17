@@ -7,16 +7,24 @@ using std::vector;
 // Brute force "naive" method: "Sort-merging" the two arrays
 double bruteForce(vector<int>& nums1, vector<int>& nums2) {
 
+    // Double result
+    double result = 0.0;
+
+    // Hyphotetical vector size
+    int vector_size = nums1.size() + nums2.size();
+    bool is_even = vector_size % 2 == 0;
+    int index_to_stop = vector_size/2;
+
     // Initializing the intermediate vars
     int i = 0;
     int j = 0;
     vector<int> merged_vec;
 
-    // Median return
-    double result = 0.0;
-
     // Looping through the two arrays
     while (i < nums1.size() && j < nums2.size()){
+
+        // Break if the end is achieved
+        if (merged_vec.size() == index_to_stop + 1) break;
 
         // Get the current elements
         int current1 = nums1[i];
@@ -35,36 +43,27 @@ double bruteForce(vector<int>& nums1, vector<int>& nums2) {
         }
     }
 
-    // Iterator is out of bounds (end)
-    if (i == nums1.size()){
-        std::cout << "\nFirst vector is done" << std::endl;
-        // First vector is done
-        merged_vec.insert(merged_vec.end(), nums2.begin() + j, nums2.end());
+    // Adding the final elements
+    if (merged_vec.size() != index_to_stop + 1){
+        // If the first vector is not done
+        while (i < nums1.size()){
+            merged_vec.push_back(nums1[i++]);
+            if (merged_vec.size() == index_to_stop + 1) break;
+        }
+
+        // If the last vector is not done
+        while (j < nums2.size()){
+            merged_vec.push_back(nums2[j++]);
+            if (merged_vec.size() == index_to_stop + 1) break;
+        }
     }
 
-    if (j == nums2.size()){
-        std::cout << "\nSecond vector is done" << std::endl;
-        // Second vector is done
-        merged_vec.insert(merged_vec.end(), nums1.begin() + i, nums1.end());
-    }
-
-    // Find the median of the return vector
-    if (merged_vec.size() % 2 == 0){
-        // Merged vector has even size
-        int index = merged_vec.size() / 2;
-        result = (merged_vec[index] + merged_vec[index - 1]) / 2.0;
+    // Find the median
+    if (is_even){
+        result = (merged_vec[index_to_stop - 1] + merged_vec[index_to_stop])/2.0;
     } else {
-        // Merged vector has odd size
-        int index = merged_vec.size() / 2;
-        result = merged_vec[index];
+        result = merged_vec[index_to_stop];
     }
-
-
-    // Print the merged vector
-    for (int num : merged_vec){
-        std::cout << num << " ";
-    }
-    std::cout << std::endl;
 
     // Merged array is sorted
     return result;
